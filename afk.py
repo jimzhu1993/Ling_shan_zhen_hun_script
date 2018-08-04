@@ -2,34 +2,21 @@ import pyautogui as pag
 import time
 from enum import Enum
 
-RANDOM_INT = 5
-
 class Button(Enum):
+    # hardcode the pixel value of the center of each button
     AUTO = (73, 104, 103)
     CANCEL = (21, 28, 64)
     FUNCTION = (204, 208, 171)
 
-class game_support(object):
+class game_support(object, resetRoundInterval = 5):
     def __init__(self):
+        # locate buttons for reference
+        self.reset = resetRoundInterval
         self.autoButtonPosition = None
         self.cancelButtonPosition = None
-        self.functionButtonPosition = None
-        self.automating = False
-
-    def get_button(self, name):
-        buttonPos = pag.locateCenterOnScreen(name)
-        if buttonPos:
-            print (name.split('.')[0] + " button is found at " + str(buttonPos))
-            return buttonPos
-        else:
-            print (name.split('.')[0] + " button is not found")
-            return None
-
-    def start_afk_init(self):
-        function = self.get_button('Function.png')
-        while not function:
-            function = self.get_button('Function.png')
-        self.functionButtonPosition = function
+        self.functionButtonPosition = self.get_button('Function.png')
+        while not self.functionButtonPosition:
+            self.functionButtonPosition = self.get_button('Function.png')
         self.autoButtonPosition = self.get_button('Auto.png')
         self.cancelButtonPosition = self.get_button('Cancel.png')
         if self.autoButtonPosition:
@@ -40,6 +27,15 @@ class game_support(object):
             self.click_button(Button.CANCEL)
             time.sleep(0.5)
             self.autoButtonPosition = self.get_button('Auto.png')
+
+    def get_button(self, name):
+        buttonPos = pag.locateCenterOnScreen(name)
+        if buttonPos:
+            print (name.split('.')[0] + " button is found at " + str(buttonPos))
+            return buttonPos
+        else:
+            # print (name.split('.')[0] + " button is not found")
+            return None
 
     def click_button(self, button):
         if button == Button.AUTO:
@@ -74,14 +70,14 @@ class game_support(object):
                     else:
                         self.click_button(Button.CANCEL)
                         self.click_button(Button.AUTO)
-                    time.sleep(RANDOM_INT)
+                    time.sleep(self.reset)
                 else:
-                    print ("Not in battle")
+                    # print ("Not in battle")
+                # auto attack has 3 seconds delay to take effect
                 time.sleep(3)
         except KeyboardInterrupt:
             pass
 
 if __name__ == "__main__":
     support = game_support()
-    support.start_afk_init()
     support.run()

@@ -8,8 +8,8 @@ class Button(Enum):
     CANCEL = (21, 28, 64)
     FUNCTION = (204, 208, 171)
 
-class game_support(object, resetRoundInterval = 5):
-    def __init__(self):
+class game_support(object):
+    def __init__(self, resetRoundInterval = 5):
         # locate buttons for reference
         self.reset = resetRoundInterval
         self.autoButtonPosition = None
@@ -72,7 +72,7 @@ class game_support(object, resetRoundInterval = 5):
                         self.click_button(Button.AUTO)
                     time.sleep(self.reset)
                 else:
-                    # print ("Not in battle")
+                    print ("Not in battle")
                 # auto attack has 3 seconds delay to take effect
                 time.sleep(3)
         except KeyboardInterrupt:
